@@ -57,7 +57,6 @@ class ItineraryAttractionItem(BaseModel):
     notes: Optional[str] = None
 
 class ItineraryCreate(BaseModel):
-    user_id: int
     title: str = Field(..., min_length=1, max_length=200)
     days: int = Field(..., ge=1, le=30)
     summary: str = Field(..., min_length=1, max_length=2000)
@@ -66,7 +65,6 @@ class ItineraryCreate(BaseModel):
     attractions: List[ItineraryAttractionItem] = Field(..., min_length=1)
 
 class BusinessClaimCreate(BaseModel):
-    user_id: int
     notes: Optional[str] = None
 
 
@@ -329,7 +327,7 @@ async def user_login(login: UserLogin):
 
 
 @app.post("/itineraries", status_code=201)
-async def create_itinerary(itinerary: ItineraryCreate):
+async def create_itinerary(itinerary: ItineraryCreate, user: dict = Depends(get_current_user)):
     conn = get_db()
     try:
         with conn.cursor() as cursor:
@@ -340,7 +338,7 @@ async def create_itinerary(itinerary: ItineraryCreate):
                 INSERT INTO itineraries (user_id, title, days, summary, region_scope, estimated_cost, created_at)
                 VALUES (%s, %s, %s, %s, %s, %s, NOW())
             """, (
-                    itinerary.user_id,
+                    user["id"],
                     itinerary.title,
                     itinerary.days,
                     itinerary.summary,
@@ -376,7 +374,7 @@ async def create_itinerary(itinerary: ItineraryCreate):
 
 
 @app.post("/attractions/{attraction_id}/claim", status_code=201)
-async def claim_attraction(attraction_id: int, claim: BusinessClaimCreate):
+async def claim_attraction(attraction_id: int, claim: BusinessClaimCreate, user: dict = Depends(get_current_user)):
     conn = get_db()
     try:
         with conn.cursor() as cursor:
@@ -401,7 +399,7 @@ async def claim_attraction(attraction_id: int, claim: BusinessClaimCreate):
                 INSERT INTO business_claims (user_id, attraction_id, status, submitted_at, notes)
                 VALUES (%s, %s, %s, NOW(), %s)
             """, (
-                    claim.user_id,
+                    user["id"],
                     attraction_id,
                     'pending',
                     claim.notes
