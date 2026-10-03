@@ -1,5 +1,6 @@
 import os
 from dotenv import load_dotenv
+from fastapi.middleware.cors import CORSMiddleware
 from fastapi import FastAPI, HTTPException, Depends, Security
 from fastapi.security import HTTPBearer, HTTPAuthorizationCredentials
 from pydantic import BaseModel, Field
@@ -23,7 +24,16 @@ ALGORITHM = "HS256"
 ACCESS_TOKEN_EXPIRE_MINUTES = 30
 REFRESH_TOKEN_EXPIRE_DAYS = 7
 
+
 app = FastAPI(title="Local Tourism API")
+
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["http://localhost:5173"],
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
 
 
 def get_db():
@@ -122,7 +132,7 @@ async def list_attractions():
     try:
         with conn.cursor() as cursor:
             cursor.execute("""
-                SELECT a.name, a.province, a.avg_rating, c.name AS category
+                SELECT a.id, a.name, a.province, a.avg_rating, c.name AS category
                 FROM attractions a
                 JOIN categories c ON c.id = a.category_id
                 ORDER BY a.avg_rating DESC
