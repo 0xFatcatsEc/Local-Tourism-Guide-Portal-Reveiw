@@ -46,7 +46,6 @@ def get_db():
     )
 
 class ReviewCreate(BaseModel):
-    # user_id: int
     attraction_id: int
     rating: int = Field(..., ge=1, le=5)
     text: str = Field(..., min_length=1, max_length=2000)

@@ -1,6 +1,18 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&display=swap');
 @import "tailwindcss";
 
 
 :root {
-    --bg-main: [radial-gradient(ellipse_at_top,_var(--tw-gradient-stops))] from-[#ccc6f1] via-[#addccb] to-[#ccc6f1];
+    --button-bg-primary: #1676A5;
+    --primary-icon-color: #1676A5;
+    --button-bg-secondary: #E0F2FA;
+    --text-bg-secondary: #E0F2FA;
+    --text-primary: #143B4C;
+    --text-secondary: #76C8EC;
+    --text-hover: #1676A5;
+    --shadow-lg: 0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -4px rgb(0 0 0 / 0.1);
 }
+
+body {
+    font-family: 'Inter', sans-serif;
+  }
