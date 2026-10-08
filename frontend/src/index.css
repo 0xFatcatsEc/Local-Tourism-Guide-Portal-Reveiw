@@ -9,10 +9,11 @@
     --text-bg-secondary: #E0F2FA;
     --text-primary: #143B4C;
     --text-secondary: #76C8EC;
+    --search-text: #587481;
     --text-hover: #1676A5;
     --shadow-lg: 0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -4px rgb(0 0 0 / 0.1);
 }
 
 body {
     font-family: 'Inter', sans-serif;
-  }
+}
