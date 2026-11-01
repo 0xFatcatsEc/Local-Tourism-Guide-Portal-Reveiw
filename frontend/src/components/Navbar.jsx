@@ -1,45 +1,152 @@
-import { useState } from 'react'
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { faCompass, faBars, faXmark } from '@fortawesome/free-solid-svg-icons'
+import { useState } from "react"
 
-function Navbar() {
-    const [isOpen, setIsOpen] = useState(false)
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
+
+import {
+    faCompass,
+    faBars,
+    faXmark,
+} from "@fortawesome/free-solid-svg-icons"
+
+function Navbar({ user, onLogout }) {
+    const [open, setOpen] = useState(false)
+    const close = () => setOpen(false)
+
+    const panel =
+        "flex items-center gap-3 rounded-3xl bg-white/80 " +
+        "px-4 py-4 shadow-lg backdrop-blur-xl"
+
+    const button =
+        "rounded-2xl bg-[#1676A5] px-4 py-2 text-sm " +
+        "font-semibold text-white hover:bg-[#125e84]"
+
+    const links = [
+        ["Explore", "#explore"],
+        ["Categories", "#categories"],
+        ["Itineraries", "#itineraries"],
+    ]
+
+    if (user) {
+        links.push(["Dashboard", "#dashboard"])
+    }
+
+    if (user?.role === "admin") {
+        links.push(["Admin", "#admin"])
+    }
+
+    function account() {
+        return user ? (
+            <>
+                <span className="max-w-32 truncate text-sm font-semibold">
+                    {user.name}
+                </span>
+
+                <button
+                    type="button"
+                    onClick={() => {
+                        close()
+                        onLogout()
+                    }}
+                    className={`${button} cursor-pointer`}
+                >
+                    Logout
+                </button>
+            </>
+        ) : (
+            <>
+                <a
+                    href="#login"
+                    onClick={close}
+                    className={button}
+                >
+                    Login
+                </a>
+
+                <a
+                    href="#register"
+                    onClick={close}
+                    className={button}
+                >
+                    Register
+                </a>
+            </>
+        )
+    }
 
     return (
-        <nav className="sticky top-5 z-50 flex w-full justify-center px-4">
-            <div className="h-auto w-full max-w-8xl flex items-center justify-between gap-2 md:gap-5">
+        <nav className="sticky top-5 z-50 flex justify-center px-4">
+            <div className="flex w-full max-w-[1440px] items-center justify-between gap-3">
+                <a
+                    href="#home"
+                    onClick={close}
+                    className={`${panel} shrink-0`}
+                >
+                    <FontAwesomeIcon
+                        icon={faCompass}
+                        className="text-3xl text-[#1676A5]"
+                    />
 
-                <div className="flex flex-row gap-3 h-[4rem] items-center justify-center text-black bg-white/30 px-4 md:px-8 py-4 backdrop-blur-xl rounded-3xl shadow-lg">
-                    <h1 className="flex justify-center gap-2 items-center">
-                        <FontAwesomeIcon icon={faCompass} className={"text-[var(--primary-icon-color)] text-[28px] md:text-[35px]"} />
-                    </h1>
-                    <p className="flex flex-col text-[14px] md:text-[18px] font-bold text-[var(--text-primary)] leading-none">
-                        LOCALLENS <span className="text-[6px] md:text-[8px] font-semibold">PHILIPPINE TOURISM PORTAL</span>
-                    </p>
+                    <span className="flex flex-col text-base font-bold leading-none text-[#143B4C]">
+                        LOCALLENS
+
+                        <span className="mt-1 text-[7px] tracking-wider">
+                            PHILIPPINE TOURISM PORTAL
+                        </span>
+                    </span>
+                </a>
+
+                <div
+                    className={`${panel} hidden flex-1 justify-evenly xl:flex`}
+                >
+                    {links.map(([label, href]) => (
+                        <a
+                            key={href}
+                            href={href}
+                            className="text-sm font-semibold text-[#143B4C] hover:text-[#1676A5]"
+                        >
+                            {label}
+                        </a>
+                    ))}
                 </div>
-                <div className="hidden lg:flex h-[4rem] w-full gap-5 items-center justify-evenly text-black bg-white/30 px-8 py-4 backdrop-blur-xl rounded-3xl shadow-lg">
-                    <p className="text-[15px] font-semibold cursor-pointer hover:text-[var(--text-hover)] relative group">Explore <span className="absolute left-0 -bottom-1 w-0 h-[2px] bg-[#1676A5] group-hover:w-full transition-all duration-300"></span></p>
-                    <p className="text-[15px] font-semibold cursor-pointer hover:text-[var(--text-hover)] relative group">Categories <span className="absolute left-0 -bottom-1 w-0 h-[2px] bg-[#1676A5] group-hover:w-full transition-all duration-300"></span></p>
-                    <p className="text-[15px] font-semibold cursor-pointer hover:text-[var(--text-hover)] relative group">Itineraries <span className="absolute left-0 -bottom-1 w-0 h-[2px] bg-[#1676A5] group-hover:w-full transition-all duration-300"></span></p>
-                </div>
-                <div className="flex gap-2 md:gap-5 h-[4rem] items-center justify-center bg-white/30 px-4 md:px-8 py-4 backdrop-blur-xl rounded-3xl shadow-lg">
-                    <div className="hidden md:flex gap-3">
-                        <button className="text-white text-[14px] bg-[var(--button-bg-primary)] px-6 py-2 md:py-3 rounded-3xl font-semibold hover:bg-[var(--text-secondary)] hover:text-[var(--text-primary)] transition-all cursor-pointer">Login</button>
-                        <button className="text-white text-[14px] bg-[var(--button-bg-primary)] px-4 py-2 md:py-3 rounded-3xl font-semibold hover:bg-[var(--text-secondary)] hover:text-[var(--text-primary)] transition-all cursor-pointer">Register</button>
+
+                <div className={panel}>
+                    <div className="hidden items-center gap-3 xl:flex">
+                        {account()}
                     </div>
-                    <button onClick={() => setIsOpen(!isOpen)} className="lg:hidden text-[var(--text-primary)] text-[22px] p-2">
-                        <FontAwesomeIcon icon={isOpen ? faXmark : faBars} />
+
+                    <button
+                        type="button"
+                        aria-label={open ? "Close menu" : "Open menu"}
+                        aria-expanded={open}
+                        aria-controls="mobile-menu"
+                        onClick={() => setOpen(!open)}
+                        className="cursor-pointer px-2 text-xl text-[#143B4C] xl:hidden"
+                    >
+                        <FontAwesomeIcon
+                            icon={open ? faXmark : faBars}
+                        />
                     </button>
                 </div>
             </div>
-            {isOpen && (
-                <div className="absolute top-[5rem] left-4 right-4 lg:hidden bg-white/30 backdrop-blur-xl rounded-3xl shadow-xl p-6 flex flex-col gap-4">
-                    <p className="text-[16px] font-semibold py-2 border-b">Explore</p>
-                    <p className="text-[16px] font-semibold py-2 border-b">Categories</p>
-                    <p className="text-[16px] font-semibold py-2 border-b">Itineraries</p>
-                    <div className="flex gap-3 mt-2">
-                        <button className="w-full text-white text-[14px] bg-[var(--button-bg-primary)] px-6 py-3 rounded-3xl font-semibold">Login</button>
-                        <button className="w-full text-white text-[14px] bg-[var(--button-bg-primary)] px-6 py-3 rounded-3xl font-semibold">Register</button>
+
+            {open && (
+                <div
+                    id="mobile-menu"
+                    className="absolute left-4 right-4 top-20 flex flex-col gap-4 rounded-3xl bg-white/95 p-6 shadow-xl backdrop-blur-xl xl:hidden"
+                >
+                    {links.map(([label, href]) => (
+                        <a
+                            key={href}
+                            href={href}
+                            onClick={close}
+                            className="text-sm font-semibold text-[#143B4C]"
+                        >
+                            {label}
+                        </a>
+                    ))}
+
+                    <div className="flex flex-wrap items-center gap-3 border-t border-slate-200 pt-4">
+                        {account()}
                     </div>
                 </div>
             )}
